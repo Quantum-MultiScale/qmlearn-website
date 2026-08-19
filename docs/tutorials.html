@@ -24,14 +24,16 @@
   </section>
 
   <section class="section">
-    <div class="container prose">
-
+    <div class="container">
       <div class="note-box">
         <p>HDF5 databases used in the papers are not shipped with the notebooks. Generate them with the training-set notebook, or point the AIMD scripts at your own <code>.hdf5</code> files.</p>
       </div>
 
-      <h2 id="learning">1-RDM / 2-RDM learning and training</h2>
-      <p>The first notebook builds a QMLearn database: displaced geometries, a PySCF engine, and stored potentials plus RDMs. The second notebook is the unified training workflow used for the 2-RDM paper: it fits γ, δγ, Γ, Γ<sup>c</sup>, and Δ models, scans KRR hyperparameters, and plots potential-energy curves against CASCI/FCI references.</p>
+      <div class="section-head">
+        <span class="eyebrow">Training</span>
+        <h2 id="learning">1-RDM / 2-RDM learning and training</h2>
+        <p>The first notebook builds a QMLearn database: displaced geometries, a PySCF engine, and stored potentials plus RDMs. The second notebook is the unified training workflow used for the 2-RDM paper: it fits γ, δγ, Γ, Γ<sup>c</sup>, and Δ models, scans KRR hyperparameters, and plots potential-energy curves against CASCI/FCI references.</p>
+      </div>
 
       <div class="table-wrap">
         <table class="qm notebook-table">
@@ -56,11 +58,17 @@
           </tbody>
         </table>
       </div>
+      <p class="muted mt-3 mb-0">The unified trainer lives as <code>Unify_Training_Webpage.ipynb</code> in the examples bundle; the copy above is the website tutorial.</p>
+    </div>
+  </section>
 
-      <p class="muted">The unified trainer lives as <code>Unify_Training_Webpage.ipynb</code> in the examples bundle; the copy above is the website tutorial.</p>
-
-      <h2 id="aimd">1-RDM / 2-RDM AIMD</h2>
-      <p>These notebooks attach <code>QMLCalculator</code> to ASE and run NVE velocity-Verlet dynamics for water at 300&nbsp;K (0.5&nbsp;fs timestep). Production runs in the examples used 20&nbsp;000 steps; the notebooks default to a short trajectory so they are interactive. Swap in your trained HDF5 path before running.</p>
+  <section class="section" style="background:var(--surface-2)">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Dynamics</span>
+        <h2 id="aimd">1-RDM / 2-RDM AIMD</h2>
+        <p>These notebooks attach <code>QMLCalculator</code> to ASE and run NVE velocity-Verlet dynamics for water at 300&nbsp;K (0.5&nbsp;fs timestep). Production runs in the examples used 20&nbsp;000 steps; the notebooks default to a short trajectory so they are interactive. Swap in your trained HDF5 path before running.</p>
+      </div>
 
       <div class="table-wrap">
         <table class="qm notebook-table">
@@ -90,10 +98,16 @@
           </tbody>
         </table>
       </div>
+    </div>
+  </section>
 
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Calculator</span>
+        <h2 id="gamma2c">Minimal 2-RDM (Γ<sup>c</sup>) calculator</h2>
+        <p>Load a trained Γ<sup>c</sup> model and attach it as an ASE calculator. The same pattern works for <code>gamma</code> and <code>gamma2cum</code> by changing the target, method, and kernel-ridge key.</p>
       </div>
-
-      <h3>Minimal 2-RDM (Γ<sup>c</sup>) calculator</h3>
       <pre><code>from sklearn.kernel_ridge import KernelRidge
 from qmlearn.io.model import db2qmmodel
 from qmlearn.api.api4ase import QMLCalculator
@@ -108,24 +122,37 @@ atoms = molecule('H2O')
 atoms.calc = QMLCalculator(qmmodel=qmmodel, method='gamma2',
                            properties=('energy',))
 print(atoms.get_potential_energy())</code></pre>
+    </div>
+  </section>
 
-      <h3>Production scripts</h3>
-      <p>The notebooks above are the tutorial versions. The original water AIMD scripts (20&nbsp;000 steps) and SLURM <code>jobfile</code>s are in <code>notebooks/examples/</code>:</p>
-      <ul>
+  <section class="section" style="background:var(--surface-2)">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Examples</span>
+        <h2 id="scripts">Production scripts</h2>
+        <p>The notebooks above are the tutorial versions. The original water AIMD scripts (20&nbsp;000 steps) and SLURM <code>jobfile</code>s are in <code>notebooks/examples/</code>.</p>
+      </div>
+      <ul class="plain-list">
         <li><a href="notebooks/examples/4_gamma_300/qml_md.py"><code>4_gamma_300</code></a> — 1-RDM AIMD</li>
         <li><a href="notebooks/examples/1_Gamma_C_300/qml_md.py"><code>1_Gamma_C_300</code></a> — Γ<sup>c</sup> 2-RDM AIMD</li>
         <li><a href="notebooks/examples/2_Cum_300/qml_md.py"><code>2_Cum_300</code></a> — cumulant 2-RDM AIMD</li>
         <li><a href="notebooks/examples/3_Exact_FCI/qml_md.py"><code>3_Exact_FCI</code></a> — FCI-trained 1-RDM AIMD (reference-style)</li>
       </ul>
-
       <div class="callout mt-4">
         <span class="ico" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 014 2z"/></svg></span>
         <p>On HPC, wrap the AIMD Python with your site’s job script. Keep <code>OMP_NUM_THREADS=1</code> unless you have measured a benefit from threaded BLAS inside PySCF.</p>
       </div>
+    </div>
+  </section>
 
-      <h2 id="videos">Video tutorials</h2>
-      <p><a href="https://youtube.com/playlist?list=PLDgw3fS4ncAFRaT-FT1gkornQ9dFY5AAA" target="_blank" rel="noopener">QMLearn YouTube playlist ↗</a></p>
-      <div class="video-grid mt-2">
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Talks</span>
+        <h2 id="videos">Video tutorials</h2>
+        <p><a href="https://youtube.com/playlist?list=PLDgw3fS4ncAFRaT-FT1gkornQ9dFY5AAA" target="_blank" rel="noopener">QMLearn YouTube playlist ↗</a></p>
+      </div>
+      <div class="video-grid">
         <div class="video-card">
           <iframe src="https://www.youtube.com/embed/TGevvSvqfhY?rel=0&modestbranding=1" title="Bhaskar Rana: Learning the Electronic Structure of Excited States via the 1-RDM" loading="lazy" allowfullscreen></iframe>
           <div class="video-meta">
@@ -148,8 +175,7 @@ print(atoms.get_potential_energy())</code></pre>
           </div>
         </div>
       </div>
-
-      <p class="mt-4">For the Python API behind these notebooks, see <a href="source.html">The code</a>. For the scientific background, see the <a href="contact.html#papers">papers</a>.</p>
+      <p class="mt-4 mb-0">For the Python API behind these notebooks, see <a href="source.html">The code</a>. For the scientific background, see the <a href="contact.html#papers">papers</a>.</p>
     </div>
   </section>
 

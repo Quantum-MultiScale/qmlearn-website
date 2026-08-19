@@ -77,6 +77,9 @@ p { margin: 0 0 1rem; }
 .section-head { max-width: 760px; margin-bottom: 36px; }
 .section-head.center { margin-left: auto; margin-right: auto; text-align: center; }
 .section-head p { color: var(--muted); font-size: 1.08rem; margin: 0; }
+.plain-list { margin: 0; padding-left: 22px; color: var(--ink); }
+.plain-list li { margin: 8px 0; }
+.container > .note-box:first-child { margin-top: 0; margin-bottom: 2rem; }
 
 .lead { font-size: 1.15rem; color: var(--muted); }
 
