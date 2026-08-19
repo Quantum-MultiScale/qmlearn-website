@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>2-RDM AIMD (cumulant Δ): QMLearn</title>
+  <meta name="description" content="NVE dynamics from δγ plus the cumulant Δ (method=&#x27;gamma2cum&#x27;).">
+  <link rel="icon" href="../_static/qmlearn.ico" sizes="any">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-page="tutorials" data-root="../">
+
+  <section class="page-hero">
+    <div class="container">
+      <div class="page-hero-inner">
+        <div class="crumbs"><a href="../index.html">Home</a> <span>/</span> <a href="../tutorials.html">Tutorials</a> <span>/</span> aimd_2rdm_cumulant</div>
+        <h1>2-RDM AIMD (cumulant Δ)</h1>
+        <p>NVE dynamics from δγ plus the cumulant Δ (method='gamma2cum'). Open this page as a rendered notebook, or <a href="aimd_2rdm_cumulant.ipynb" download>download aimd_2rdm_cumulant.ipynb</a> and run it locally after you <a href="../install.html">install QMLearn</a>.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container notebook">
+<div class="nb-markdown"><h1>2-RDM AIMD (cumulant Δ)</h1>
+<p>NVE molecular dynamics for water at 300 K from <strong>δγ</strong> and the <strong>cumulant</strong> Δ = Γ − γ ∧ γ.</p>
+<p>Two <code>QMModel</code>s are trained: one for <code>delta_gamma</code> and one for <code>gamma2cum</code>. <code>QMLCalculator</code> is called with <code>method='gamma2cum'</code> and <code>qmmodel2</code> holding the cumulant model.</p>
+<p>Point <code>dbfile</code> at an HDF5 database that stores both <code>delta_gamma</code> and <code>gamma2cum</code>. Production examples used 20 000 steps of 0.5 fs.</p>
+</div>
+<div class="nb-cell nb-code">
+<div class="nb-prompt" aria-hidden="true">In&nbsp;[&nbsp;]:</div>
+<div class="nb-source">
+<pre><code class="nb-highlight"><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">ase.build</span> <span class="kn">import</span> <span class="n">molecule</span>
+<span class="kn">from</span> <span class="nn">ase.md.velocitydistribution</span> <span class="kn">import</span> <span class="n">MaxwellBoltzmannDistribution</span><span class="p">,</span> <span class="n">force_temperature</span>
+<span class="kn">from</span> <span class="nn">ase.md.verlet</span> <span class="kn">import</span> <span class="n">VelocityVerlet</span>
+<span class="kn">from</span> <span class="nn">ase</span> <span class="kn">import</span> <span class="n">units</span>
+<span class="kn">from</span> <span class="nn">sklearn.kernel_ridge</span> <span class="kn">import</span> <span class="n">KernelRidge</span>
+
+<span class="kn">from</span> <span class="nn">qmlearn.io.model</span> <span class="kn">import</span> <span class="n">db2qmmodel</span>
+<span class="kn">from</span> <span class="nn">qmlearn.api.api4ase</span> <span class="kn">import</span> <span class="n">QMLCalculator</span>
+</code></pre>
+</div>
+</div>
+<div class="nb-cell nb-code">
+<div class="nb-prompt" aria-hidden="true">In&nbsp;[&nbsp;]:</div>
+<div class="nb-source">
+<pre><code class="nb-highlight"><span class="n">dbfile</span> <span class="o">=</span> <span class="s2">&quot;train.hdf5&quot;</span>
+
+<span class="n">T</span> <span class="o">=</span> <span class="mi">300</span>
+<span class="n">nsteps</span> <span class="o">=</span> <span class="mi">200</span>
+<span class="n">timestep</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">fs</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">8888</span><span class="p">)</span>
+</code></pre>
+</div>
+</div>
+<div class="nb-cell nb-code">
+<div class="nb-prompt" aria-hidden="true">In&nbsp;[&nbsp;]:</div>
+<div class="nb-source">
+<pre><code class="nb-highlight"><span class="n">models</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;gamma2cum&quot;</span><span class="p">:</span> <span class="n">KernelRidge</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="s2">&quot;rbf&quot;</span><span class="p">),</span>
+    <span class="s2">&quot;delta_gamma&quot;</span><span class="p">:</span> <span class="n">KernelRidge</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="s2">&quot;rbf&quot;</span><span class="p">),</span>
+<span class="p">}</span>
+
+<span class="n">qmmodel</span> <span class="o">=</span> <span class="n">db2qmmodel</span><span class="p">(</span>
+    <span class="n">dbfile</span><span class="p">,</span>
+    <span class="n">names</span><span class="o">=</span><span class="s2">&quot;*&quot;</span><span class="p">,</span>
+    <span class="n">mmodels</span><span class="o">=</span><span class="n">models</span><span class="p">,</span>
+    <span class="n">target</span><span class="o">=</span><span class="s2">&quot;delta_gamma&quot;</span><span class="p">,</span>
+    <span class="n">method</span><span class="o">=</span><span class="s2">&quot;delta_gamma&quot;</span><span class="p">,</span>
+    <span class="n">purify_gamma</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">qmmodel2</span> <span class="o">=</span> <span class="n">db2qmmodel</span><span class="p">(</span>
+    <span class="n">dbfile</span><span class="p">,</span>
+    <span class="n">names</span><span class="o">=</span><span class="s2">&quot;*&quot;</span><span class="p">,</span>
+    <span class="n">mmodels</span><span class="o">=</span><span class="n">models</span><span class="p">,</span>
+    <span class="n">target</span><span class="o">=</span><span class="s2">&quot;gamma2cum&quot;</span><span class="p">,</span>
+    <span class="n">method</span><span class="o">=</span><span class="s2">&quot;gamma2cum&quot;</span><span class="p">,</span>
+    <span class="n">purify_gamma</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre>
+</div>
+</div>
+<div class="nb-cell nb-code">
+<div class="nb-prompt" aria-hidden="true">In&nbsp;[&nbsp;]:</div>
+<div class="nb-source">
+<pre><code class="nb-highlight"><span class="n">atoms</span> <span class="o">=</span> <span class="n">molecule</span><span class="p">(</span><span class="s2">&quot;H2O&quot;</span><span class="p">)</span>
+<span class="n">atoms</span><span class="o">.</span><span class="n">calc</span> <span class="o">=</span> <span class="n">QMLCalculator</span><span class="p">(</span>
+    <span class="n">qmmodel</span><span class="o">=</span><span class="n">qmmodel</span><span class="p">,</span>
+    <span class="n">qmmodel2</span><span class="o">=</span><span class="n">qmmodel2</span><span class="p">,</span>
+    <span class="n">method</span><span class="o">=</span><span class="s2">&quot;gamma2cum&quot;</span><span class="p">,</span>
+    <span class="n">properties</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;energy&quot;</span><span class="p">,),</span>
+<span class="p">)</span>
+
+<span class="n">MaxwellBoltzmannDistribution</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">temperature_K</span><span class="o">=</span><span class="n">T</span><span class="p">,</span> <span class="n">force_temp</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">get_momenta</span><span class="p">()</span>
+<span class="n">p</span> <span class="o">-=</span> <span class="n">p</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span>
+<span class="n">atoms</span><span class="o">.</span><span class="n">set_momenta</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+<span class="n">force_temperature</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+
+<span class="n">dyn</span> <span class="o">=</span> <span class="n">VelocityVerlet</span><span class="p">(</span>
+    <span class="n">atoms</span><span class="p">,</span>
+    <span class="n">timestep</span><span class="o">=</span><span class="n">timestep</span><span class="p">,</span>
+    <span class="n">trajectory</span><span class="o">=</span><span class="s2">&quot;md_nve_cumulant.traj&quot;</span><span class="p">,</span>
+    <span class="n">logfile</span><span class="o">=</span><span class="s2">&quot;md_nve_cumulant.log&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">dyn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">nsteps</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Finished&quot;</span><span class="p">,</span> <span class="n">nsteps</span><span class="p">,</span> <span class="s2">&quot;steps; energy =&quot;</span><span class="p">,</span> <span class="n">atoms</span><span class="o">.</span><span class="n">get_potential_energy</span><span class="p">())</span>
+</code></pre>
+</div>
+</div>
+    </div>
+  </section>
+
+  <script src="../assets/js/main.js" defer></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}], ignoredTags: ['script','noscript','style','textarea','pre','code']});"></script>
+</body>
+</html>
