@@ -698,7 +698,11 @@ pre code { background: none; border: 0; padding: 0; color: inherit; font-size: .
   column-gap: 10px;
   margin: .45rem 0 1.35rem;
 }
-.nb-output-body { min-width: 0; }
+.nb-output > .nb-prompt { grid-column: 1; }
+.nb-output > .nb-output-body {
+  grid-column: 2;
+  min-width: 0;
+}
 .nb-stream, .nb-plain, .nb-error {
   margin: 0 0 .6rem; padding: 12px 16px; overflow-x: auto;
   background: var(--surface); border: 1px solid var(--border);
@@ -789,4 +793,6 @@ pre code { background: none; border: 0; padding: 0; color: inherit; font-size: .
 @media (max-width: 640px) {
   .nb-code, .nb-output { grid-template-columns: 1fr; }
   .nb-prompt { padding-top: 0; margin-bottom: 6px; }
+  .nb-output > .nb-prompt,
+  .nb-output > .nb-output-body { grid-column: 1; }
 }
