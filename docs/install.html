@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Installation: QMLearn</title>
+  <meta name="description" content="Install QMLearn from GitHub with PySCF, ASE, and scikit-learn.">
+  <link rel="icon" href="_static/qmlearn.ico" sizes="any">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="install" data-root="">
+
+  <section class="page-hero">
+    <div class="container">
+      <div class="page-hero-inner">
+        <div class="crumbs"><a href="index.html">Home</a> <span>/</span> Installation</div>
+        <h1>Installation</h1>
+        <p>QMLearn is a pure-Python package. It needs Python ≥3.8, NumPy, SciPy, scikit-learn, ASE, h5py, and a quantum-chemistry engine (PySCF by default).</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container prose">
+
+      <h2>Requirements</h2>
+      <div class="detail-grid">
+        <div class="detail">
+          <div class="k">Required</div>
+          <ul>
+            <li><a href="https://www.python.org/">Python</a> ≥3.8</li>
+            <li><a href="https://numpy.org/">NumPy</a> ≥1.11</li>
+            <li><a href="https://scipy.org/">SciPy</a> ≥0.18</li>
+            <li><a href="https://scikit-learn.org/">scikit-learn</a> ≥0.24.2</li>
+            <li><a href="https://wiki.fysik.dtu.dk/ase/">ASE</a></li>
+            <li><a href="https://www.h5py.org/">h5py</a></li>
+            <li><a href="https://pyscf.org/">PySCF</a> ≥2.0</li>
+            <li><a href="https://pypi.org/project/rmsd/">rmsd</a> 1.4</li>
+          </ul>
+        </div>
+        <div class="detail">
+          <div class="k">Recommended</div>
+          <ul>
+            <li><a href="https://matplotlib.org/">matplotlib</a>: training and AIMD plots</li>
+            <li>Jupyter: interactive <a href="tutorials.html">tutorials</a></li>
+            <li>A conda or venv environment dedicated to QMLearn</li>
+          </ul>
+        </div>
+        <div class="detail">
+          <div class="k">Note</div>
+          <p class="v">The development branch is <code>dev</code> on <a href="https://github.com/Quantum-MultiScale/QMLearn">GitHub</a>. Pin versions from <code>requirements.txt</code> if you need a reproducible stack.</p>
+        </div>
+      </div>
+
+      <h2>Install from GitHub</h2>
+      <p>Clone the repository and install in the current environment:</p>
+      <pre><code>git clone https://github.com/Quantum-MultiScale/QMLearn.git
+cd QMLearn
+python -m pip install .</code></pre>
+
+      <p>Or install directly from the remote without a local clone:</p>
+      <pre><code>python -m pip install git+https://github.com/Quantum-MultiScale/QMLearn.git</code></pre>
+
+      <div class="note-box">
+        <p>To track the development branch explicitly: <code>python -m pip install git+https://github.com/Quantum-MultiScale/QMLearn.git@dev</code>.</p>
+      </div>
+
+      <h2>Virtual environment (recommended)</h2>
+      <pre><code>python3 -m venv .venv
+source .venv/bin/activate   # Windows: .venv\Scripts\activate
+python -m pip install -U pip
+python -m pip install git+https://github.com/Quantum-MultiScale/QMLearn.git
+python -m pip install matplotlib jupyter</code></pre>
+
+      <h2>Verify the install</h2>
+      <pre><code>python -c "import qmlearn; print(qmlearn.__version__)"</code></pre>
+      <p>You should see a version string (currently <code>0.0.1</code>). Next, generate a training database and fit a model: see the <a href="tutorials.html">tutorials</a>.</p>
+
+      <div class="callout mt-4">
+        <span class="ico" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg></span>
+        <p>PySCF is the default engine for GTO integrals, 1-RDMs, and 2-RDMs. Psi4 is available as an alternative engine in <code>qmlearn.drivers.psi4</code>.</p>
+      </div>
+    </div>
+  </section>
+
+  <script src="assets/js/main.js" defer></script>
+</body>
+</html>

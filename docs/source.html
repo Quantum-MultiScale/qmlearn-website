@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The code: QMLearn</title>
+  <meta name="description" content="QMLearn architecture: QMMol, QMModel, QMLCalculator, HDF5 I/O, and PySCF engines.">
+  <link rel="icon" href="_static/qmlearn.ico" sizes="any">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="source" data-root="">
+
+  <section class="page-hero">
+    <div class="container">
+      <div class="page-hero-inner">
+        <div class="crumbs"><a href="index.html">Home</a> <span>/</span> The code</div>
+        <h1>The code</h1>
+        <p>QMLearn’s Python layer: molecular engines, RDM models, ASE integration, and HDF5 databases. Source lives on the <code>dev</code> branch of <a href="https://github.com/Quantum-MultiScale/QMLearn" target="_blank" rel="noopener">Quantum-MultiScale/QMLearn</a>.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container prose">
+
+      <h2>Architecture overview</h2>
+      <p>QMLearn is entirely Python. PySCF (or Psi4) supplies GTO integrals and reference RDMs. scikit-learn supplies the regressors. ASE handles geometries and molecular dynamics. The design centers on three objects:</p>
+
+      <div class="arch-flow">
+        <div class="arch-box"><strong>Python API</strong>
+          <a href="https://github.com/Quantum-MultiScale/QMLearn/blob/dev/qmlearn/api/api4ase.py" target="_blank" rel="noopener"><code>QMLCalculator</code></a><br>
+          <a href="https://github.com/Quantum-MultiScale/QMLearn/blob/dev/qmlearn/model/model.py" target="_blank" rel="noopener"><code>QMModel</code></a><br>
+          <a href="https://github.com/Quantum-MultiScale/QMLearn/blob/dev/qmlearn/io/model.py" target="_blank" rel="noopener"><code>db2qmmodel</code></a>
+        </div>
+        <span class="arch-arrow">↔</span>
+        <div class="arch-box"><strong>QMMol</strong>
+          <a href="https://github.com/Quantum-MultiScale/QMLearn/blob/dev/qmlearn/drivers/mol.py" target="_blank" rel="noopener"><code>QMMol</code></a><br>
+          aligned GTO frame, V<sub>ext</sub>, γ, Γ
+        </div>
+        <span class="arch-arrow">↔</span>
+        <div class="arch-box"><strong>Engine</strong>
+          <a href="https://github.com/Quantum-MultiScale/QMLearn/blob/dev/qmlearn/drivers/pyscf.py" target="_blank" rel="noopener"><code>EnginePyscf</code></a><br>
+          DFT, HF, CASCI, CCSD, FCI
+        </div>
+      </div>
+
+      <ul>
+        <li><strong><a href="https://github.com/Quantum-MultiScale/QMLearn/blob/dev/qmlearn/drivers/mol.py" target="_blank" rel="noopener">QMMol</a></strong>: one geometry in a consistent AO frame (Kabsch alignment to a reference). Exposes external potentials, overlap, 1-RDMs, 2-RDMs, energies, and forces.</li>
+        <li><strong><a href="https://github.com/Quantum-MultiScale/QMLearn/blob/dev/qmlearn/model/model.py" target="_blank" rel="noopener">QMModel</a></strong>: sklearn wrappers that learn maps from V<sub>ext</sub> to γ, δγ, Γ, Γ<sup>c</sup>, or Δ, plus optional second-learn models for energy and forces.</li>
+        <li><strong><a href="https://github.com/Quantum-MultiScale/QMLearn/blob/dev/qmlearn/api/api4ase.py" target="_blank" rel="noopener">QMLCalculator</a></strong>: ASE calculator. <code>method='gamma'</code> for 1-RDM workflows; <code>method='gamma2'</code> / <code>'gamma2cum'</code> for 2-RDM AIMD.</li>
+      </ul>
+
+      <div class="note-box">
+        <p><strong>Units:</strong> engines work in Hartree and Bohr. The ASE calculator converts energy to eV and forces to eV/Å, matching ASE conventions.</p>
+      </div>
+
+      <h2 id="qmmol"><a href="https://github.com/Quantum-MultiScale/QMLearn/blob/dev/qmlearn/drivers/mol.py" target="_blank" rel="noopener"><code>qmlearn.drivers.mol</code></a>: QMMol</h2>
+      <p>Construct a molecule with a basis, method, and optional active space, then duplicate it at new geometries while keeping the reference AO frame:</p>
+      <pre><code>from ase.build import molecule
+from qmlearn.drivers.mol import QMMol
+
+atoms = molecule('H2O')
+qmmol = QMMol(atoms=atoms, method='rks', basis='6-31g', xc='lda,vwn')
+qmmol.run()
+
+q2 = qmmol.duplicate(atoms)
+print(q2.vext.shape)          # external potential in AO basis
+energy = q2.calc_etotal(gamma)  # energy from a 1-RDM</code></pre>
+      <p>Supported PySCF methods include <code>dft</code>/<code>rks</code>, <code>hf</code>/<code>rhf</code>, <code>mp2</code>, <code>cisd</code>, <code>fci</code>, <code>casci</code>, and <code>ccsd</code>. CAS methods take <code>ncas</code> and <code>nelecas</code>.</p>
+
+      <h2 id="qmmodel"><a href="https://github.com/Quantum-MultiScale/QMLearn/blob/dev/qmlearn/model/model.py" target="_blank" rel="noopener"><code>qmlearn.model</code></a>: QMModel</h2>
+      <p>A <code>QMModel</code> holds a dictionary of sklearn estimators. The primary <code>method</code> is the object learned from V<sub>ext</sub>:</p>
+      <pre><code>from sklearn.kernel_ridge import KernelRidge
+from sklearn.linear_model import LinearRegression
+from qmlearn.model import QMModel
+
+mmodels = {
+    'delta_gamma': KernelRidge(alpha=0.0, kernel='rbf'),
+    'd_energy': LinearRegression(),
+    'd_forces': LinearRegression(),
+}
+model = QMModel(mmodels=mmodels, method='delta_gamma',
+                refqmmol=qmmol, purify_gamma=True)
+model.fit(vext_list, delta_gamma_list)</code></pre>
+
+      <div class="table-wrap">
+        <table class="qm">
+          <thead><tr><th>method / target</th><th>Learned object</th></tr></thead>
+          <tbody>
+            <tr><td><code>gamma</code></td><td>1-RDM γ</td></tr>
+            <tr><td><code>delta_gamma</code></td><td>δγ = γ − γ<sub>HF</sub></td></tr>
+            <tr><td><code>gamma2</code></td><td>full 2-RDM Γ</td></tr>
+            <tr><td><code>gamma2c</code></td><td>correlated 2-RDM Γ<sup>c</sup></td></tr>
+            <tr><td><code>gamma2cum</code></td><td>cumulant Δ</td></tr>
+            <tr><td><code>d_energy</code>, <code>d_forces</code></td><td>second-learn energy / forces from γ or δγ</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><a href="https://github.com/Quantum-MultiScale/QMLearn/blob/dev/qmlearn/model/model.py" target="_blank" rel="noopener"><code>MQMModel</code></a> extends this to fragment (many-body expansion) models for large systems.</p>
+
+      <h2 id="io"><a href="https://github.com/Quantum-MultiScale/QMLearn/blob/dev/qmlearn/io/model.py" target="_blank" rel="noopener"><code>qmlearn.io</code></a>: databases and <code>db2qmmodel</code></h2>
+      <p><a href="https://github.com/Quantum-MultiScale/QMLearn/blob/dev/qmlearn/io/hdf5.py" target="_blank" rel="noopener"><code>DBHDF5</code></a> stores a reference <code>QMMol</code>, training atoms, and properties (V<sub>ext</sub>, γ, Γ, energies, forces). <code>db2qmmodel</code> reads a file and fits the requested maps, including optional delta-learning of energy and forces:</p>
+      <pre><code>from qmlearn.io.model import db2qmmodel
+from sklearn.kernel_ridge import KernelRidge
+
+qmmodel = db2qmmodel(
+    'train.hdf5',
+    names='*',
+    mmodels={'gamma2c': KernelRidge(alpha=0.0, kernel='rbf')},
+    target='gamma2c',
+    method='gamma2c',
+    purify_gamma=True,
+)</code></pre>
+      <p>Related helpers: <a href="https://github.com/Quantum-MultiScale/QMLearn/blob/dev/qmlearn/io/core.py" target="_blank" rel="noopener"><code>read_db</code></a>, <code>merge_db</code>, and <a href="https://github.com/Quantum-MultiScale/QMLearn/blob/dev/qmlearn/preprocessing/__init__.py" target="_blank" rel="noopener"><code>get_train_atoms</code></a> for normal-mode sampling of training geometries.</p>
+
+      <h2 id="calculator"><a href="https://github.com/Quantum-MultiScale/QMLearn/blob/dev/qmlearn/api/api4ase.py" target="_blank" rel="noopener"><code>qmlearn.api.api4ase</code></a>: QMLCalculator</h2>
+      <p>ASE-compatible calculator. Implemented properties include <code>energy</code>, <code>forces</code>, <code>dipole</code>, <code>gamma</code>, and <code>gamma2</code>.</p>
+      <pre><code>from qmlearn.api.api4ase import QMLCalculator
+
+# 1-RDM (+ optional energy/force corrections)
+atoms.calc = QMLCalculator(
+    qmmodel=qmmodel,
+    second_learn={'energy': 'd_energy', 'forces': 'd_forces'},
+    method='gamma',
+    properties=('energy', 'forces'),
+)
+
+# 2-RDM from Γᶜ
+atoms.calc = QMLCalculator(qmmodel=qmmodel, method='gamma2',
+                           properties=('energy',))
+
+# 2-RDM from cumulant (needs two fitted models)
+atoms.calc = QMLCalculator(qmmodel=qmmodel, qmmodel2=qmmodel2,
+                           method='gamma2cum', properties=('energy',))</code></pre>
+
+      <div class="table-wrap">
+        <table class="qm">
+          <thead><tr><th>method</th><th>What runs</th></tr></thead>
+          <tbody>
+            <tr><td><code>gamma</code></td><td><code>calc_with_gamma</code>: predict γ or δγ; optional second-learn E/F; else contract integrals.</td></tr>
+            <tr><td><code>gamma2</code></td><td><code>calc_with_gamma2</code>: predict Γ<sup>c</sup>, purify, energy from Γ.</td></tr>
+            <tr><td><code>gamma2cum</code></td><td><code>calc_with_gamma2cum</code>: predict δγ and Δ, reconstruct Γ.</td></tr>
+            <tr><td><code>engine</code> / <code>engine2</code></td><td>Call PySCF directly (reference energies, 1-RDM, 2-RDM).</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Package map</h2>
+      <div class="table-wrap">
+        <table class="qm">
+          <thead><tr><th>Package</th><th>Role</th></tr></thead>
+          <tbody>
+            <tr><td><a href="https://github.com/Quantum-MultiScale/QMLearn/tree/dev/qmlearn/drivers" target="_blank" rel="noopener"><code>qmlearn.drivers</code></a></td><td><code>QMMol</code>, PySCF and Psi4 engines, core RMSD alignment.</td></tr>
+            <tr><td><a href="https://github.com/Quantum-MultiScale/QMLearn/tree/dev/qmlearn/model" target="_blank" rel="noopener"><code>qmlearn.model</code></a></td><td><code>QMModel</code>, <code>MQMModel</code>, model builders.</td></tr>
+            <tr><td><a href="https://github.com/Quantum-MultiScale/QMLearn/tree/dev/qmlearn/io" target="_blank" rel="noopener"><code>qmlearn.io</code></a></td><td>HDF5 databases, <code>db2qmmodel</code>, read/merge helpers.</td></tr>
+            <tr><td><a href="https://github.com/Quantum-MultiScale/QMLearn/tree/dev/qmlearn/api" target="_blank" rel="noopener"><code>qmlearn.api</code></a></td><td>ASE calculator and geometry constraints.</td></tr>
+            <tr><td><a href="https://github.com/Quantum-MultiScale/QMLearn/tree/dev/qmlearn/preprocessing" target="_blank" rel="noopener"><code>qmlearn.preprocessing</code></a></td><td>Training-set generation (normal-mode sampling).</td></tr>
+            <tr><td><a href="https://github.com/Quantum-MultiScale/QMLearn/tree/dev/qmlearn/utils" target="_blank" rel="noopener"><code>qmlearn.utils</code></a></td><td>Block packing of AO matrices, progress helpers.</td></tr>
+            <tr><td><a href="https://github.com/Quantum-MultiScale/QMLearn/tree/dev/qmlearn/vibrations" target="_blank" rel="noopener"><code>qmlearn.vibrations</code></a></td><td>Vibrational analysis utilities.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="mt-4">Worked examples are on the <a href="tutorials.html">tutorials</a> page.</p>
+    </div>
+  </section>
+
+  <script src="assets/js/main.js" defer></script>
+</body>
+</html>

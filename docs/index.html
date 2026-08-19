@@ -1,182 +1,225 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html lang="en">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Welcome to QMLearn! &mdash; QMLearn 0.0.1 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-      <link rel="stylesheet" href="_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" type="text/css" />
-      <link rel="stylesheet" href="_static/panels-bootstrap.5fd3999ee7762ccc51105388f4a9d115.css" type="text/css" />
-      <link rel="stylesheet" href="_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" type="text/css" />
-    <link rel="shortcut icon" href="_static/qmlearn.ico"/>
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="_static/js/theme.js"></script>
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Contacts" href="source/contact.html" /> 
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QMLearn: Quantum Machine Learning of Reduced Density Matrices</title>
+  <meta name="description" content="QMLearn learns 1- and 2-electron reduced density matrices in the AO basis to build surrogate electronic structure methods for energies, forces, and AIMD.">
+  <meta property="og:title" content="QMLearn: Quantum Machine Learning of Reduced Density Matrices">
+  <meta property="og:description" content="Surrogate electronic structure methods by learning 1-RDMs and 2-RDMs.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="_static/qmlearn.ico" sizes="any">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
 </head>
+<body data-page="home" data-root="">
 
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-            <a href="#" class="icon icon-home"> QMLearn
-            <img src="_static/qmlearn.png" class="logo" alt="Logo"/>
-          </a>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul>
-<li class="toctree-l1"><a class="reference internal" href="source/contact.html">Contacts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="source/install.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="source/tutorials.html">Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="source/qmlearn.html">API QMLearn</a></li>
-</ul>
-
-        </div>
+  <section class="hero">
+    <div class="container hero-inner">
+      <img class="hero-logo" src="_static/qmlearn-logo-on-dark.png" alt="QMLearn logo">
+      <h1>Quantum Machine Learning of <span class="grad">Reduced Density Matrices</span></h1>
+      <p><strong>QMLearn</strong> builds surrogate electronic structure methods by learning one- and two-electron reduced density matrices in the atomic-orbital basis. From a single model you get energies, forces, orbitals, and energy-conserving AIMD.</p>
+      <div class="hero-actions">
+        <a class="btn btn-accent" href="install.html">Get started</a>
+        <a class="btn btn-outline" href="tutorials.html" style="background:rgba(255,255,255,.06);color:#eaf2ff;border-color:rgba(255,255,255,.25)">Tutorials</a>
+        <a class="btn btn-outline" href="source.html" style="background:rgba(255,255,255,.06);color:#eaf2ff;border-color:rgba(255,255,255,.25)">The code</a>
       </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="#">QMLearn</a>
-      </nav>
-
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
-      <li>Welcome to QMLearn!</li>
-      <li class="wy-breadcrumbs-aside">
-        
-			<a href=genindex.html>Index</a>
-		
-          
-			<a href="https://gitlab.com/pavanello-research-group/qmlearn/tree/master/Docs/index.rst">Source</a>
-          
-        
-      </li>
-    
-  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
-        <a href="source/contact.html" class="btn btn-neutral float-right" title="Contacts" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-  </div>
-  <hr/>
-</div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
-  
-<style>
-/* CSS overrides for sphinx_rtd_theme */
-
-/* 24px margin */
-.nbinput.nblast.container,
-.nboutput.nblast.container {
-    margin-bottom: 19px;  /* padding has already 5px */
-}
-
-/* ... except between code cells! */
-.nblast.container + .nbinput.container {
-    margin-top: -19px;
-}
-
-.admonition > p:before {
-    margin-right: 4px;  /* make room for the exclamation icon */
-}
-
-/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
-.math {
-    text-align: unset;
-}
-</style>
-<section id="welcome-to-qmlearn">
-<h1>Welcome to QMLearn!<a class="headerlink" href="#welcome-to-qmlearn" title="Permalink to this headline"></a></h1>
-<p>Quantum Machine Learning by learning one-body reduced density matrices in the AO basis.</p>
-<section id="a-snapshot-of-qmlearn">
-<h2>A snapshot of QMLearn<a class="headerlink" href="#a-snapshot-of-qmlearn" title="Permalink to this headline"></a></h2>
-<a class="reference internal image-reference" href="_images/figure3.png"><img alt="QMLearnOverview" src="_images/figure3.png" style="width: 1000px;" /></a>
-</section>
-<section id="in-these-docs">
-<h2>In these docs<a class="headerlink" href="#in-these-docs" title="Permalink to this headline"></a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="source/contact.html">Contacts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="source/install.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="source/tutorials.html">Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="source/qmlearn.html">API QMLearn</a></li>
-</ul>
-</div>
-</section>
-</section>
-
-
-           </div>
-          </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="source/contact.html" class="btn btn-neutral float-right" title="Contacts" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+      <div class="hero-stats">
+        <div class="stat"><b>1- &amp; 2-RDM</b><span>γ, Γ, Γ<sup>c</sup>, and Δ models</span></div>
+        <div class="stat"><b>PySCF + ASE</b><span>Training, properties, MD</span></div>
+        <div class="stat"><b>OBSERVABLES</b><span>A single model delivers any observable</span></div>
+      </div>
     </div>
+  </section>
 
-  <hr/>
-
-  <div role="contentinfo">
-    <p>&#169; Copyright 2022, Pavanello Research Group.
-      <span class="lastupdated">Last updated on Friday, 01 Aug 2025 19:10:47.
-      </span></p>
-  </div>
-
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-  
-<button onclick="topFunction()" id="btn" title="Go to top">Top</button>
-
-<script>
-var mybutton = document.getElementById("btn");
-
-window.onscroll = function() {scrollFunction()};
-
-function scrollFunction() {
-  if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-    mybutton.style.display = "block";
-  } else {
-    mybutton.style.display = "none";
-  }
-}
-
-function topFunction() {
-  document.body.scrollTop = 0;
-  document.documentElement.scrollTop = 0;
-}
-</script>
-
-
-</footer>
+  <section class="section--tight section">
+    <div class="container">
+      <div class="grid grid-3">
+        <div class="card reveal">
+          <div class="ibubble" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>
+          </div>
+          <h3>Learn the electronic structure</h3>
+          <p>Kernel models map the external potential to the 1-RDM (γ) or 2-RDM (Γ), including correlated (Γ<sup>c</sup>) and cumulant (Δ) decompositions. Observables follow by contraction with integrals.</p>
+        </div>
+        <div class="card reveal">
+          <div class="ibubble" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+          </div>
+          <h3>Drop-in ASE calculator</h3>
+          <p><code>QMLCalculator</code> plugs into ASE for geometry optimization and molecular dynamics. Energies and forces come from the predicted RDM, optionally with a second-learn correction.</p>
+        </div>
+        <div class="card reveal">
+          <div class="ibubble" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M8 9l3 3-3 3M13 15h3M4 4h16v16H4z"/></svg>
+          </div>
+          <h3>Any QM method as target</h3>
+          <p>Train on DFT, Hartree–Fock, CASCI, CCSD, or FCI via PySCF. The surrogate inherits the quality of the training method at a fraction of the cost.</p>
         </div>
       </div>
-    </section>
-  </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
+    </div>
+  </section>
 
+  <hr class="rule">
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Overview</span>
+        <h2>A snapshot of QMLearn</h2>
+        <p>Training geometries sample configuration space; QM engines fill an HDF5 database of potentials and RDMs; scikit-learn models learn the maps; ASE drives predictions and dynamics.</p>
+      </div>
+      <figure class="reveal text-center">
+        <img src="_static/figure3.png" alt="QMLearn workflow: training set, RDM learning, and prediction of energies and forces" style="max-width:960px;width:100%;margin:0 auto;border-radius:var(--radius);box-shadow:var(--shadow-md)">
+      </figure>
+    </div>
+  </section>
+
+  <section class="section section--tight" style="background:var(--surface-2)">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Example</span>
+        <h2>1- and 2-RDM AIMD in a few lines</h2>
+        <p>Load a trained model from an HDF5 database, attach the ASE calculator, and run NVE dynamics. The same pattern covers 1-RDM (<code>gamma</code>) and 2-RDM (<code>gamma2</code>, <code>gamma2cum</code>) models.</p>
+      </div>
+      <div class="example-grid reveal">
+        <div class="example-panel">
+          <div class="example-panel-head">
+            <span class="eyebrow">Maps</span>
+            <h3>What is learned</h3>
+          </div>
+          <div class="example-panel-body">
+            <ul class="people" style="width:100%">
+              <li><strong>γ-learning</strong> — V<sub>ext</sub> → 1-RDM</li>
+              <li><strong>δγ-learning</strong> — V<sub>ext</sub> → γ − γ<sub>HF</sub></li>
+              <li><strong>Γ-learning</strong> — V<sub>ext</sub> → 2-RDM</li>
+              <li><strong>Γ<sup>c</sup> / Δ</strong> — correlated 2-RDM or cumulant</li>
+            </ul>
+            <p class="muted mt-3 mb-0">See the <a href="tutorials.html">tutorials</a> for training notebooks and water AIMD examples at 300&nbsp;K.</p>
+          </div>
+        </div>
+        <div class="example-panel">
+          <div class="example-panel-head">
+            <span class="eyebrow">Script</span>
+            <h3>Minimal AIMD</h3>
+          </div>
+          <div class="example-panel-body example-panel-body--code">
+            <pre><code>from sklearn.kernel_ridge import KernelRidge
+from qmlearn.io.model import db2qmmodel
+from qmlearn.api.api4ase import QMLCalculator
+from ase.build import molecule
+from ase.md.verlet import VelocityVerlet
+from ase import units
+
+models = {'delta_gamma': KernelRidge(alpha=0.0, kernel='rbf')}
+qmmodel = db2qmmodel('train.hdf5', mmodels=models,
+                     target='delta_gamma', method='delta_gamma')
+
+atoms = molecule('H2O')
+atoms.calc = QMLCalculator(qmmodel=qmmodel, method='gamma',
+                           properties=('energy', 'forces'))
+dyn = VelocityVerlet(atoms, 0.5 * units.fs)
+dyn.run(200)</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Literature</span>
+        <h2>Papers</h2>
+        <p>Please cite the papers that match the models you use: 1-RDM learning, SCF-quality 1-RDMs, or 2-RDM learning.</p>
+      </div>
+      <ul class="refs reveal">
+        <li>
+          <strong>2-RDM learning (2026)</strong>
+          J. A. Martinez B, B. Rana, X. Shao, K. Pernal, M. Pavanello,
+          <em>Machine learning the two-electron reduced density matrix in molecules and condensed phases</em>.
+          <a href="https://arxiv.org/abs/2603.06882" target="_blank" rel="noopener">arXiv:2603.06882</a>
+        </li>
+        <li>
+          <strong>1-RDM at SCF thresholds (2025)</strong>
+          B. Rana, N. Viot, J. A. Martinez B, X. Shao, P. Ramos, M. Pavanello,
+          <em>Learning the One-Electron Reduced Density Matrix at SCF Convergence Thresholds</em>,
+          <em>J. Chem. Theory Comput.</em> <strong>21</strong>, 12652 (2025).
+          <a href="https://pubs.acs.org/doi/10.1021/acs.jctc.5c01564" target="_blank" rel="noopener">JCTC</a>
+        </li>
+        <li>
+          <strong>1-RDM electronic structure (2023)</strong>
+          X. Shao, L. Paetow, M. E. Tuckerman, M. Pavanello,
+          <em>Machine learning electronic structure methods based on the one-electron reduced density matrix</em>,
+          <em>Nat. Commun.</em> <strong>14</strong>, 6281 (2023).
+          <a href="https://www.nature.com/articles/s41467-023-41953-9" target="_blank" rel="noopener">Nature Communications</a>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section--tight" style="background:var(--surface-2)">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">People &amp; funding</span>
+        <h2>Contributors</h2>
+      </div>
+      <div class="grid grid-2 reveal">
+        <div class="card">
+          <h3>Core team</h3>
+          <ul class="people">
+            <li><a href="https://shaoxc.com" target="_blank" rel="noopener">Xuecheng Shao</a></li>
+            <li><a href="https://sites.rutgers.edu/prg/people/jessica-martinez/" target="_blank" rel="noopener">Jessica Martinez</a></li>
+            <li><a href="https://sites.rutgers.edu/prg/people/bhaskar-rana/" target="_blank" rel="noopener">Bhaskar Rana</a></li>
+            <li><a href="https://sasn.rutgers.edu/about-us/faculty-staff/michele-pavanello" target="_blank" rel="noopener">Michele Pavanello</a></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Thanks to</h3>
+          <ul class="people">
+            <li><a href="https://www.quantum-multiscale.org/" target="_blank" rel="noopener">Quantum Multiscale (Q-MS)</a> collaboration</li>
+            <li>NSF CyberTraining</li>
+            <li>NSF Chemical Theory Models and Computations</li>
+            <li>PySCF, ASE, and scikit-learn developers</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Quick links</span>
+        <h2>Start here</h2>
+      </div>
+      <div class="grid grid-4 reveal">
+        <a class="card link-card hover" href="install.html">
+          <h3>Install</h3>
+          <p>Clone from GitHub and pip-install with PySCF and ASE.</p>
+          <span class="arrow">Read guide <span class="chev">→</span></span>
+        </a>
+        <a class="card link-card hover" href="tutorials.html">
+          <h3>Tutorials</h3>
+          <p>1-/2-RDM training notebooks and AIMD examples.</p>
+          <span class="arrow">View tutorials <span class="chev">→</span></span>
+        </a>
+        <a class="card link-card hover" href="source.html">
+          <h3>The code</h3>
+          <p>QMMol, QMModel, QMLCalculator, and I/O modules.</p>
+          <span class="arrow">Browse API <span class="chev">→</span></span>
+        </a>
+        <a class="card link-card hover" href="https://github.com/Quantum-MultiScale/QMLearn" target="_blank" rel="noopener">
+          <h3>GitHub</h3>
+          <p>Source, issues, and example notebooks.</p>
+          <span class="arrow">Open repo <span class="chev">→</span></span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <script src="assets/js/main.js" defer></script>
 </body>
 </html>

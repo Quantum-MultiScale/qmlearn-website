@@ -1,0 +1,18 @@
+#!/bin/bash
+#SBATCH --time=2-12:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks=40
+#SBATCH --job-name=qml_md
+#SBATCH --mem=100GB
+
+# Load your Python environment, then:
+#   sbatch jobfile qml_md.py
+#
+# qml_md.py expects one argument: path to the HDF5 training database.
+
+set -euo pipefail
+source /path/to/venv/bin/activate   # edit me
+
+dbfile=/path/to/train.hdf5          # edit me: FCI/CASCI 1-RDM database
+export OMP_NUM_THREADS=1
+python "$1" "$dbfile" > "$1.out"
