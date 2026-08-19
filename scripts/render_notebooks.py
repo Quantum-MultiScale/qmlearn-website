@@ -135,9 +135,16 @@ def render_data(data: dict, execution_count) -> str:
     return ""
 
 
+def skip_html_cell(cell: dict) -> bool:
+    """Omit verbose distance-scan cells from the website HTML."""
+    return "print('Distance:" in join_source(cell.get("source"))
+
+
 def render_cells(nb: dict) -> str:
     blocks = []
     for cell in nb.get("cells") or []:
+        if skip_html_cell(cell):
+            continue
         ctype = cell.get("cell_type")
         if ctype == "markdown":
             blocks.append(render_markdown(join_source(cell.get("source"))))
