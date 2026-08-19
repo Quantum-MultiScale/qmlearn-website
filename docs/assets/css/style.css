@@ -692,17 +692,16 @@ pre code { background: none; border: 0; padding: 0; color: inherit; font-size: .
   background: #0a0a0a; color: #e8eef8;
 }
 .nb-highlight { background: none; border: 0; padding: 0; color: inherit; font-size: .86rem; }
-.nb-output {
+.nb-output { margin: .45rem 0 1.35rem; }
+.nb-output > .nb-prompt { padding-top: 4px; margin-bottom: 6px; }
+.nb-output-body { min-width: 0; }
+.nb-output:has(> .nb-prompt) {
   display: grid;
   grid-template-columns: 4.6rem minmax(0, 1fr);
   column-gap: 10px;
-  margin: .45rem 0 1.35rem;
+  align-items: start;
 }
-.nb-output > .nb-prompt { grid-column: 1; }
-.nb-output > .nb-output-body {
-  grid-column: 2;
-  min-width: 0;
-}
+.nb-output:has(> .nb-prompt) > .nb-prompt { margin-bottom: 0; }
 .nb-stream, .nb-plain, .nb-error {
   margin: 0 0 .6rem; padding: 12px 16px; overflow-x: auto;
   background: var(--surface); border: 1px solid var(--border);
@@ -791,8 +790,6 @@ pre code { background: none; border: 0; padding: 0; color: inherit; font-size: .
 .nb-highlight .vm { color: #f8f8f2 } /* Name.Variable.Magic */
 .nb-highlight .il { color: #ae81ff } /* Literal.Number.Integer.Long */
 @media (max-width: 640px) {
-  .nb-code, .nb-output { grid-template-columns: 1fr; }
+  .nb-code, .nb-output:has(> .nb-prompt) { grid-template-columns: 1fr; }
   .nb-prompt { padding-top: 0; margin-bottom: 6px; }
-  .nb-output > .nb-prompt,
-  .nb-output > .nb-output-body { grid-column: 1; }
 }
